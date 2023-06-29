@@ -1,17 +1,16 @@
-FROM python:3.10.6
+FROM rust:latest as builder
 
-ENV PYTHONUNBUFFERED 1
+WORKDIR /rediz
+COPY Cargo.toml Cargo.lock ./
+COPY src ./src
+RUN cargo build --release
 
-RUN python -m pip install poetry
 
-WORKDIR /workspace
+FROM debian:buster-slim
 
-COPY . .
+WORKDIR /rediz
+COPY --from=builder /rediz/target/release/rediz .
 
-ENV PATH="/root/.local/bin:$PATH"
 
-RUN poetry config virtualenvs.create false && poetry lock --no-update && poetry install
-
-ENTRYPOINT ["poetry", "run", "python", "main.py"] 
-
-EXPOSE 6379/tcp
+EXPOSE 6379
+CMD ["./rediz"]

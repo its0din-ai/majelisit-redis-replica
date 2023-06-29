@@ -1,0 +1,12 @@
+[package]
+name = "rediz"
+version = "0.1.666"
+edition = "2021"
+authors = [
+    "Wahyu Syafiuddin <encrypt0r-x@protonmail.com>"
+]
+
+[dependencies]
+tokio = { version = "1.23.0", features = ["full"] }
+env_logger = "0.9.0"
+log = "0.4.11"
