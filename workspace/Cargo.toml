@@ -5,6 +5,3 @@ edition = "2021"
 authors = [
     "Wahyu Syafiuddin <encrypt0r-x@protonmail.com>"
 ]
-
-[dependencies]
-tokio = { version = "1.23.0", features = ["full"] }
