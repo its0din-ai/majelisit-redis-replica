@@ -6,7 +6,6 @@ import traceback
 from supabase import create_client, Client
 import os
 from postgrest.base_request_builder import APIResponse
-import subprocess
 #postgrest.base_request_builder.APIResponse
 
 def send_score(scores: list, logs: str, time_elapsed_millis: int):
@@ -179,11 +178,6 @@ def main():
     delta = b - a
     time_elapsed_millis = int(delta.total_seconds() * 1000)
 
-    # add executor logs
-
-    logs_errors += subprocess\
-                    .check_output(["docker", "logs", "redisnya"]).decode()
-                    
     print("Test Results:")
     print("=============")
     for i, res in enumerate(results):
