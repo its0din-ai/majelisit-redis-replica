@@ -3,7 +3,6 @@ use serde_resp::{ de, RESPType };
 pub fn dezer(req: &str) -> Vec<RESPType> {
     let mut hasil: Vec<RESPType> = Vec::new();
     let serialized_data: RESPType = de::from_str(&req).unwrap();
-    
     match serialized_data {
         RESPType::Array(bulk_data) => {
             if let Some(data) = bulk_data {

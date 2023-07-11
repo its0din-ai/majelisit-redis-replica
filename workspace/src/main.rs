@@ -56,11 +56,7 @@ async fn main() {
                                     strim.write(resp).unwrap();
                                 }
                             } else {
-                                data_stor.set(
-                                    command[1].clone(),
-                                    command[2].clone(),
-                                    None
-                                ).await;
+                                data_stor.set(command[1].clone(), command[2].clone(), None).await;
                                 let resp = b"+OK\r\n";
                                 strim.write(resp).unwrap();
                             }

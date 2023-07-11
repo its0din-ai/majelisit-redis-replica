@@ -37,16 +37,15 @@ impl DataStore {
 
     pub async fn remove_expired(&mut self) {
         let now = Instant::now();
-        self.exp_time.retain(|_, expiration| expiration.map(|exp| exp > now).unwrap_or(true));
 
-        let expired_keys: Vec<_> = self.data
-            .keys()
-            .filter(|key| !self.exp_time.contains_key(*key))
-            .cloned()
+        let expired_keys: Vec<_> = self.exp_time
+            .iter()
+            .filter(|(_, expiration)| expiration.map(|exp| exp <= now).unwrap_or(false))
+            .map(|(key, _)| key.clone())
             .collect();
-        
         for key in expired_keys {
             self.data.remove(&key);
+            self.exp_time.remove(&key);
         }
     }
 }
