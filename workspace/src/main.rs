@@ -16,7 +16,7 @@ async fn main() {
     loop {
         match liztnr.accept() {
             Ok((mut strim, _)) => {
-                let mut buffer = [0; 128];
+                let mut buffer = [0; 75];
                 match strim.read(&mut buffer) {
                     Ok(_) => {
                         let req = String::from_utf8_lossy(&buffer[..]);
