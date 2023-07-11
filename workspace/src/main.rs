@@ -39,6 +39,7 @@ async fn main() {
                             }
                         }
                         // APP LOGIC Disini banh
+                        data_stor.remove_expired().await;
                         let mut resp: &[u8] = b"";
                         if command[0] == "PING" {
                             resp = b"+PONG\r\n";
@@ -65,7 +66,6 @@ async fn main() {
                                 strim.write(resp.clone()).unwrap();
                             }
                         } else if command[0] == "GET" {
-                            data_stor.remove_expired().await;
                             let hasil = data_stor.get(&command[1].clone()).await;
                             match hasil {
                                 Some(hasil) => {
