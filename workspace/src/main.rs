@@ -45,15 +45,23 @@ async fn main() {
                                 resp = b"+PONG\r\n";
                                 strim.write(resp.clone()).unwrap();
                             } else if command[0] == "SET" {
-                                if command.len() > 3{
+                                if command.len() > 3 {
                                     if command[3] == "EX" {
                                         let time = command[4].parse::<u64>().unwrap();
-                                        data_stor.set(command[1].clone(), command[2].clone(), tokio::time::Duration::from_secs(time.into())).await;
+                                        data_stor.set(
+                                            command[1].clone(),
+                                            command[2].clone(),
+                                            Some(tokio::time::Duration::from_secs(time.into()))
+                                        ).await;
                                         resp = b"+OK\r\n";
                                         strim.write(resp.clone()).unwrap();
                                     }
-                                }else {
-                                    data_stor.set(command[1].clone(), command[2].clone(), tokio::time::Duration::from_secs(0)).await;
+                                } else {
+                                    data_stor.set(
+                                        command[1].clone(),
+                                        command[2].clone(),
+                                        None
+                                    ).await;
                                     resp = b"+OK\r\n";
                                     strim.write(resp.clone()).unwrap();
                                 }
