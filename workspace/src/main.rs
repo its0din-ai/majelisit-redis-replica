@@ -16,7 +16,7 @@ async fn main() {
     loop {
         match liztnr.accept() {
             Ok((mut strim, _)) => {
-                let mut buffer = [0; 75];
+                let mut buffer = [0; 90];
                 match strim.read(&mut buffer) {
                     Ok(_) => {
                         let req = String::from_utf8_lossy(&buffer[..]);
@@ -40,10 +40,9 @@ async fn main() {
                         }
                         // APP LOGIC Disini banh
                         data_stor.remove_expired().await;
-                        let mut resp: &[u8] = b"";
                         if command[0] == "PING" {
-                            resp = b"+PONG\r\n";
-                            strim.write(resp.clone()).unwrap();
+                            let resp = b"+PONG\r\n";
+                            strim.write(resp).unwrap();
                         } else if command[0] == "SET" {
                             if command.len() > 3 {
                                 if command[3] == "EX" {
@@ -53,8 +52,8 @@ async fn main() {
                                         command[2].clone(),
                                         Some(tokio::time::Duration::from_secs(time.into()))
                                     ).await;
-                                    resp = b"+OK\r\n";
-                                    strim.write(resp.clone()).unwrap();
+                                    let resp = b"+OK\r\n";
+                                    strim.write(resp).unwrap();
                                 }
                             } else {
                                 data_stor.set(
@@ -62,8 +61,8 @@ async fn main() {
                                     command[2].clone(),
                                     None
                                 ).await;
-                                resp = b"+OK\r\n";
-                                strim.write(resp.clone()).unwrap();
+                                let resp = b"+OK\r\n";
+                                strim.write(resp).unwrap();
                             }
                         } else if command[0] == "GET" {
                             let hasil = data_stor.get(&command[1].clone()).await;
@@ -74,17 +73,17 @@ async fn main() {
                                     strim.write(rsp).unwrap();
                                 }
                                 None => {
-                                    resp = b"$-1\r\n";
-                                    strim.write(resp.clone()).unwrap();
+                                    let resp = b"$-1\r\n";
+                                    strim.write(resp).unwrap();
                                 }
                             }
                         } else if command[0] == "DEL" {
                             data_stor.del(command[1].clone()).await;
-                            resp = b"$1\r\n1\r\n";
-                            strim.write(resp.clone()).unwrap();
+                            let resp = b"$1\r\n1\r\n";
+                            strim.write(resp).unwrap();
                         } else {
-                            resp = b"$-1\r\n";
-                            strim.write(resp.clone()).unwrap();
+                            let resp = b"$-1\r\n";
+                            strim.write(resp).unwrap();
                         }
                     }
                     Err(e) => {
