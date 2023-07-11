@@ -1,4 +1,4 @@
-use serde_resp::{de, RESPType};
+use serde_resp::{ de, RESPType };
 
 fn is_resp_serialized(value: &str) -> bool {
     let mut is_serialized = false;
@@ -9,21 +9,16 @@ fn is_resp_serialized(value: &str) -> bool {
 }
 
 pub fn dezer(req: &str) -> Vec<RESPType> {
-    // check if req is serialized
     if !is_resp_serialized(req) {
         return vec![RESPType::Error("ERR: invalid command".to_string())];
-    }
-    else{
-
+    } else {
         let mut hasil: Vec<RESPType> = Vec::new();
         let serialized_data: RESPType = de::from_str(&req).unwrap();
-        // println!("serialized_data: {:?}", serialized_data);
-
-        // handle panic
+        // println!("{:?}", serialized_data);
         match serialized_data {
             RESPType::Array(bulk_data) => {
-                for data in bulk_data {
-                    for cmd in data{
+                if let Some(data) = bulk_data {
+                    for cmd in data {
                         match cmd {
                             RESPType::BulkString(bulk_data) => {
                                 hasil.push(RESPType::BulkString(bulk_data));
@@ -42,19 +37,3 @@ pub fn dezer(req: &str) -> Vec<RESPType> {
         return hasil;
     }
 }
-
-
-// RESPType::Array(bulk_data) => {
-//     for data in bulk_data {
-//         for cmd in data{
-//             match cmd {
-//                 RESPType::BulkString(bulk_data) => {
-//                     hasil.push(RESPType::BulkString(bulk_data));
-//                 }
-//                 _ => {
-//                     hasil.push(RESPType::Error("ERR: invalid command".to_string()));
-//                 }
-//             }
-//         }
-//     }
-// }
