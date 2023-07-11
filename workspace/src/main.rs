@@ -45,53 +45,42 @@ async fn main() {
                                 resp = b"+PONG\r\n";
                                 strim.write(resp.clone()).unwrap();
                             } else if command[0] == "SET" {
-                                if command.len() <= 3{
-                                    data_stor.set(command[1].clone(), command[2].clone()).await;
-                                    resp = b"+OK\r\n";
-                                    strim.write(resp.clone()).unwrap();
-                                    println!("SET OK: {}", command[1].clone());
-                                } else {
+                                data_stor.set(command[1].clone(), command[2].clone()).await;
+                                resp = b"+OK\r\n";
+                                strim.write(resp.clone()).unwrap();
+                                // if command.len() <= 3{
+                                // } else {
 
+                                //     // ["SET", "foo2", "barrrrrrr", "EX", "3", "NX"]
+                                //     let time = command[4].parse::<u64>().unwrap();
+                                //     data_stor.set(command[1].clone(), command[2].clone()).await;
+                                //     resp = b"+OK\r\n";
+                                //     strim.write(resp.clone()).unwrap();
+                                //     tokio::time::sleep(tokio::time::Duration::from_secs(time.into())).await;
+                                //     data_stor.del(command[1].clone()).await;
 
-                                    
-                                    // ["SET", "foo2", "barrrrrrr", "EX", "3", "NX"]
-                                    let time = command[4].parse::<u64>().unwrap();
-                                    data_stor.set(command[1].clone(), command[2].clone()).await;
-                                    resp = b"+OK\r\n";
-                                    strim.write(resp.clone()).unwrap();
-                                    tokio::time::sleep(tokio::time::Duration::from_secs(time.into())).await;
-                                    data_stor.del(command[1].clone()).await;
-
-
-
-
-                                }
+                                // }
                             } else if command[0] == "GET" {
                                 let hasil = data_stor.get(&command[1].clone()).await;
                                 match hasil {
                                     Some(hasil) => {
-                                        let fmt = format!{"${}\r\n{}\r\n", hasil.len(), hasil};
-                                        println!("hasil:: {}", fmt);
+                                        let fmt = format!("${}\r\n{}\r\n", hasil.len(), hasil);
                                         let rsp = fmt.as_bytes();
                                         strim.write(rsp).unwrap();
-                                        println!("GET OK: {}", command[1].clone());
                                     }
                                     None => {
                                         resp = b"$-1\r\n";
                                         strim.write(resp.clone()).unwrap();
-                                        println!("GET ERR: {}", command[1].clone());
                                     }
                                 }
                             } else if command[0] == "DEL" {
                                 data_stor.del(command[1].clone()).await;
                                 resp = b"$1\r\n1\r\n";
                                 strim.write(resp.clone()).unwrap();
-                                println!("DEL OK: {}", command[1].clone());
                             } else {
-                                resp = b"-ERR unknown command\r\n";
+                                resp = b"$-1\r\n";
                                 strim.write(resp.clone()).unwrap();
                             }
-                            // println!("{:?}", resp);
                         } else {
                             let resp: &[u8] = b"KOSONG\r\n";
                             strim.write(resp).unwrap();
@@ -106,6 +95,5 @@ async fn main() {
                 println!("ERRRRR: {}", e);
             }
         }
-        // print!("Connection closed");/
     }
 }
