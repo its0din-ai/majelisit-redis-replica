@@ -5,3 +5,7 @@ edition = "2021"
 authors = [
     "Wahyu Syafiuddin <encrypt0r-x@protonmail.com>"
 ]
+
+[dependencies]
+serde = { version = "1.0.130", features = ["derive"] }
+serde-resp = "0.3.1"
