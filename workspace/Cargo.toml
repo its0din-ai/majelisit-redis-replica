@@ -1,12 +1,11 @@
 [package]
 name = "rediz"
-version = "0.1.666"
+version = "1.3.37"
 edition = "2021"
 authors = [
     "Wahyu Syafiuddin <encrypt0r-x@protonmail.com>"
 ]
 
 [dependencies]
-serde = { version = "1.0.130", features = ["derive"] }
 serde-resp = "0.3.1"
 tokio = { version = "1.29.0", features = ["full"] }
