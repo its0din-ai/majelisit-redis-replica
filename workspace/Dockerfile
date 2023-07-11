@@ -6,7 +6,7 @@ COPY src ./src
 RUN cargo build --release
 
 
-FROM ubuntu:latest
+FROM debian:latest
 
 WORKDIR /rediz
 COPY --from=builder /rediz/target/release/rediz .
