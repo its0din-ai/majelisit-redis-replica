@@ -45,22 +45,20 @@ async fn main() {
                                 resp = b"+PONG\r\n";
                                 strim.write(resp.clone()).unwrap();
                             } else if command[0] == "SET" {
-                                data_stor.set(command[1].clone(), command[2].clone()).await;
-                                resp = b"+OK\r\n";
-                                strim.write(resp.clone()).unwrap();
-                                // if command.len() <= 3{
-                                // } else {
-
-                                //     // ["SET", "foo2", "barrrrrrr", "EX", "3", "NX"]
-                                //     let time = command[4].parse::<u64>().unwrap();
-                                //     data_stor.set(command[1].clone(), command[2].clone()).await;
-                                //     resp = b"+OK\r\n";
-                                //     strim.write(resp.clone()).unwrap();
-                                //     tokio::time::sleep(tokio::time::Duration::from_secs(time.into())).await;
-                                //     data_stor.del(command[1].clone()).await;
-
-                                // }
+                                if command.len() > 3{
+                                    if command[3] == "EX" {
+                                        let time = command[4].parse::<u64>().unwrap();
+                                        data_stor.set(command[1].clone(), command[2].clone(), tokio::time::Duration::from_secs(time.into())).await;
+                                        resp = b"+OK\r\n";
+                                        strim.write(resp.clone()).unwrap();
+                                    }
+                                }else {
+                                    data_stor.set(command[1].clone(), command[2].clone(), tokio::time::Duration::from_secs(0)).await;
+                                    resp = b"+OK\r\n";
+                                    strim.write(resp.clone()).unwrap();
+                                }
                             } else if command[0] == "GET" {
+                                data_stor.remove_expired().await;
                                 let hasil = data_stor.get(&command[1].clone()).await;
                                 match hasil {
                                     Some(hasil) => {
